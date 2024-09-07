@@ -55,7 +55,7 @@ class _PagCodState extends State<PagCod> {
 
   void _verificarCodigo() {
     final codigoIngresado = int.tryParse(_codigoController.text) ?? 0;
-     Billetes billetes = Billetes();
+    Billetes billetes = Billetes();
     if (nequi.vencio) {
       _mostrarOverlay('Su código ha caducado. Redirigiendo al menú...');
     } else if (codigoIngresado == 0) {
@@ -65,8 +65,11 @@ class _PagCodState extends State<PagCod> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => FacturaPage(conteoBilletes:billetes.mandarBilletes(widget.valor),numeroCuenta:widget.numeroCuenta ,total: widget.valor,),
-
+          builder: (context) => FacturaPage(
+            conteoBilletes: billetes.mandarBilletes(widget.valor),
+            numeroCuenta: widget.numeroCuenta,
+            total: widget.valor,
+          ),
         ),
       );
     } else {

@@ -1,6 +1,8 @@
+import 'package:cajero/Models/nequi.dart';
 import 'package:flutter/material.dart';
 import 'package:cajero/ui/page/montos.dart';
 import 'package:cajero/ui/widgets/boton.dart';
+import 'package:flutter/services.dart';
 
 class PagNeq extends StatefulWidget {
   @override
@@ -8,24 +10,39 @@ class PagNeq extends StatefulWidget {
 }
 
 class _PagNeqState extends State<PagNeq> {
-  final TextEditingController _telefonoController = TextEditingController();
+  final TextEditingController telefono = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Clave para el formulario
+  final Nequi _nequi = Nequi(); // Instancia de la clase Nequi
 
   @override
   void dispose() {
-    _telefonoController.dispose();
+    telefono.dispose();
     super.dispose();
   }
 
+  bool _esCampoVacio(String? valor) {
+    return valor == null || valor.isEmpty;
+  }
+
+  String? _validarTelefono(String? valor) {
+    if (_esCampoVacio(valor)) {
+      return 'El campo no puede estar vacío';
+    } else if (valor!.length != 10) {
+      return 'El número debe tener exactamente 10 dígitos';
+    } else if (!_nequi.verificarTelefono(valor)) {
+      return 'Número de teléfono inválido';
+    }
+    return null;
+  }
+
+  // Función para continuar a la siguiente pantalla
   void _continuar() {
-    // Verifica si el formulario es válido
     if (_formKey.currentState!.validate()) {
-      // Si el formulario es válido, navega a la siguiente página
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MontoPage(
-                numeroCuenta: '0${_telefonoController.text}', tipo: 'N')),
+            builder: (context) =>
+                MontoPage(numeroCuenta: '0${telefono.text}', tipo: 'N')),
       );
     }
   }
@@ -82,7 +99,9 @@ class _PagNeqState extends State<PagNeq> {
                   ),
                   SizedBox(height: 40),
                   TextFormField(
-                    controller: _telefonoController,
+                    controller: telefono,
+                    // Para que solo se ingresen números
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -100,14 +119,7 @@ class _PagNeqState extends State<PagNeq> {
                       hintText: 'Número de teléfono',
                     ),
                     keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El campo no puede estar vacío';
-                      } else if (value.length != 10) {
-                        return 'El número debe tener exactamente 10 dígitos';
-                      }
-                      return null; // El valor es válido
-                    },
+                    validator: _validarTelefono,
                   ),
                   SizedBox(height: 40),
                   CustomButton(

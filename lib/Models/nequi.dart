@@ -14,8 +14,7 @@ class Nequi {
       random = Random().nextInt(900000) + 100000;
       vencio = false;
       tiempoRestante = 15; // Duración del temporizador en segundos
-      intentosRestantes =
-          3; // Reinicia los intentos cuando se genera un nuevo código
+      intentosRestantes = 3;
       tiempoFin = DateTime.now().add(Duration(seconds: tiempoRestante));
     });
     iniciarTemporizador(updateState);
@@ -65,5 +64,40 @@ class Nequi {
 
   void dispose() {
     timer?.cancel();
+  }
+  // Lista de prefijos válidos como cadenas
+
+  List<String> prefijosTelefonicos = [
+    '300',
+    '301',
+    '302',
+    '303',
+    '304',
+    '324',
+    '305',
+    '310',
+    '311',
+    '312',
+    '313',
+    '314',
+    '320',
+    '321',
+    '322',
+    '323',
+    '315',
+    '316',
+    '317',
+    '318',
+    '319',
+    '350',
+    '351',
+    '333'
+  ];
+  bool verificarTelefono(String telefono) {
+    String prefijo = telefono.substring(0, 3);
+    if (telefono.length == 10 && prefijosTelefonicos.contains(prefijo)) {
+      return true;
+    }
+    return false;
   }
 }

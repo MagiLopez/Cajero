@@ -25,22 +25,29 @@ class _PagBancoState extends State<PagBanco> {
   }
 
   void _continuar() {
-    if (_formKey.currentState!.validate()) {
-      String telefono = _telefonoController.text;
-      String clave = _claveController.text;
+    String telefono = _telefonoController.text;
+    String clave = _claveController.text;
 
-      // Verificar si la cuenta está bloqueada
+    if (!banco.camposNoBlancos(telefono, clave)) {
+      _mostrarOverlay('Todos los campos deben ser llenados');
+      return;
+    }
+    if (!banco.validarDatos(telefono, clave)) {
+      _mostrarOverlay(
+          'Número de teléfono debe tener 10 dígitos y clave 6 dígitos');
+      return;
+    }
+    if (_formKey.currentState!.validate()) {
       if (banco.cuentaBloqueada(telefono)) {
         _mostrarOverlay('Cuenta Bloqueada');
-        return; // Salir del método si la cuenta está bloqueada
+        return;
       }
-
       if (banco.verificarContrasena(telefono, clave)) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) =>
-                MontoPage(numeroCuenta: '1$telefono', tipo: 'C'),
+                MontoPage(numeroCuenta: '2$telefono', tipo: 'C'),
           ),
         );
       } else {
@@ -217,6 +224,8 @@ class _PagBancoState extends State<PagBanco> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'El campo de clave no puede estar vacío';
+                      } else if (value.length != 6) {
+                        return 'La clave debe tener exactamente 6 dígitos';
                       }
                       return null;
                     },

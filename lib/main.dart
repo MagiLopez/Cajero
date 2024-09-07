@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'nequi/menu.dart'; // Asegúrate de que esta ruta sea correcta
+import 'ui/page/nequi/menu.dart'; // Asegúrate de que esta ruta sea correcta
 
 void main() {
   runApp(CajeroApp()); // Asegúrate de usar la clase correcta aquí

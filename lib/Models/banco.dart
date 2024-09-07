@@ -5,8 +5,14 @@ class Banco {
     '3173293903': {'password': '252525', 'estado': true},
     '3167246618': {'password': '123456', 'estado': false},
   };
-
-  // Método para verificar si la contraseña es correcta para una cuenta
+  
+  bool camposNoBlancos(String telefono, String clave) {
+    return telefono.isNotEmpty && clave.isNotEmpty;
+  }
+  bool validarDatos(String telefono, String clave) {
+      return telefono.length == 10 && clave.length == 6;
+  }
+  
   bool verificarContrasena(String numeroCuenta, String contrasena) {
     if (cuentas.containsKey(numeroCuenta)) {
       return cuentas[numeroCuenta]!['password'] == contrasena;
@@ -14,6 +20,13 @@ class Banco {
       intentosRestantes--;
     }
     return false; // Si la cuenta no existe o la contraseña es incorrecta
+  }
+
+  bool cuentaBloqueada(String telefono) {
+    if (cuentas.containsKey(telefono)) {
+      return cuentas[telefono]!['estado'] == true;
+    }
+    return false;// valida q la cuenta no este bloqueada
   }
 
   // Método para actualizar el estado de una cuenta (activo/inactivo)
@@ -27,14 +40,9 @@ class Banco {
     }
   }
 
-  bool cuentaBloqueada(String telefono) {
-    if (cuentas.containsKey(telefono)) {
-      return cuentas[telefono]!['estado'] == true;
-    }
-    return false;
-  }
-
   bool intentosAgotados() {
     return intentosRestantes <= 0;
   }
+
+  
 }

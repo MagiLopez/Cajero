@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Necesario para formatear la fecha y hora
-// Asegúrate de importar tu pantalla de menú principal
 
 class FacturaPage extends StatelessWidget {
-  final String tipoOperacion = 'RETIRO'; // Tipo de operación
-  final String numeroCuenta; // Número de cuenta
-  final Map<int, int> conteoBilletes; // Distribución de billetes
-  final int total; // Total
+  final String tipoOperacion = 'RETIRO';
+  final String numeroCuenta;
+  final Map<int, int> conteoBilletes;
+  final int total;
 
-  // Constructor que acepta los parámetros necesarios
   FacturaPage({
     required this.numeroCuenta,
     required this.conteoBilletes,
@@ -28,7 +26,6 @@ class FacturaPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Redirige al menú principal al presionar el botón de retroceso
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/menu',
@@ -49,7 +46,7 @@ class FacturaPage extends StatelessWidget {
                   color: Colors.grey.withOpacity(0.3),
                   spreadRadius: 5,
                   blurRadius: 7,
-                  offset: Offset(0, 3), // Cambia la posición de la sombra
+                  offset: Offset(0, 3),
                 ),
               ],
             ),
@@ -57,133 +54,111 @@ class FacturaPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Fecha y Hora
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Fecha: $fechaActual',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Hora: $horaActual',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-
-                // Número de Cuenta
-                Text(
-                  'Número de Cuenta:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  numeroCuenta,
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-
-                // Tipo de Operación
-                Text(
-                  'Tipo de Operación:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  tipoOperacion,
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-
-                // Línea divisoria
-                Divider(
-                  thickness: 2,
-                  color: Colors.blue,
-                ),
-                SizedBox(height: 10),
-
-                // Total
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total:',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '\$${total.toString()}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-
-                // Línea divisoria
-                Divider(
-                  thickness: 2,
-                  color: Colors.blue,
-                ),
-                SizedBox(height: 10),
-
-                // Distribución de Billetes
-                Text(
-                  'Distribución de Billetes',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Billete',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Cantidad',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  thickness: 1,
-                  color: Colors.grey,
-                ),
-                ...conteoBilletes.entries.map(
-                  (entry) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '\$${entry.key.toString()}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          entry.value.toString(),
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _construirFilaFechaHora(fechaActual, horaActual),
+                _construirFilaDetalle('Número de Cuenta:', numeroCuenta),
+                _construirFilaDetalle('Tipo de Operación:', tipoOperacion),
+                _construirLineaDivisoria(),
+                _construirFilaTotal(total),
+                _construirLineaDivisoria(),
+                _construirDistribucionBilletes(conteoBilletes),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _construirFilaFechaHora(String fecha, String hora) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('Fecha: $fecha', style: _estiloTextoNegrita()),
+        Text('Hora: $hora', style: _estiloTextoNegrita()),
+      ],
+    );
+  }
+
+  Widget _construirFilaDetalle(String etiqueta, String valor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(etiqueta, style: _estiloTextoNegrita()),
+        Text(valor, style: TextStyle(fontSize: 16)),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _construirLineaDivisoria() {
+    return const Column(
+      children: [
+        Divider(thickness: 2, color: Colors.blue),
+        SizedBox(height: 10),
+      ],
+    );
+  }
+
+  Widget _construirFilaTotal(int total) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('Total:', style: _estiloTextoNegrita()),
+        Text('\$${total.toString()}', style: _estiloTextoNegrita()),
+      ],
+    );
+  }
+
+  // Widget para la distribución de billetes
+  Widget _construirDistribucionBilletes(Map<int, int> conteoBilletes) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Distribución de Billetes', style: _estiloTextoNegrita()),
+        SizedBox(height: 10),
+        _construirEncabezadoBilletes(),
+        _construirListaBilletes(conteoBilletes),
+      ],
+    );
+  }
+
+  // Widget para el encabezado de la distribución de billetes
+  Widget _construirEncabezadoBilletes() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: Text('Billete', style: _estiloTextoNegrita())),
+        Expanded(
+            child: Text('Cantidad',
+                textAlign: TextAlign.right, style: _estiloTextoNegrita())),
+      ],
+    );
+  }
+
+  // Widget para la lista de billetes
+  Widget _construirListaBilletes(Map<int, int> conteoBilletes) {
+    return Column(
+      children: conteoBilletes.entries
+          .map(
+            (entrada) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                    child: Text('\$${entrada.key}',
+                        style: TextStyle(fontSize: 16))),
+                Expanded(
+                    child: Text(entrada.value.toString(),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 16))),
+              ],
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  // Estilo de texto en negrita
+  TextStyle _estiloTextoNegrita() {
+    return const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
   }
 }
